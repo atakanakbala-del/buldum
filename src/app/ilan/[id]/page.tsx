@@ -4,6 +4,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORIES } from "@/types/database";
 import { BoostButton } from "./BoostButton";
+import { MessageButton } from "./MessageButton";
 
 export const revalidate = 30;
 
@@ -80,9 +81,11 @@ export default async function IlanDetayPage({
           <p className="mt-4 whitespace-pre-wrap text-stone-600">
             {listing.description}
           </p>
-          <div style={{ background: "red", padding: "20px", color: "white" }}>
-            MESAJ BUTONU TEST
-          </div>
+          <MessageButton
+            listingId={listing.id}
+            listingOwnerId={listing.user_id}
+            listingTitle={listing.title}
+          />
           <BoostButton listingId={listing.id} listingUserId={listing.user_id} />
         </div>
       </article>
