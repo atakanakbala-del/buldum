@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function GirisPage() {
+function GirisForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -78,5 +78,13 @@ export default function GirisPage() {
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function GirisPage() {
+  return (
+    <Suspense fallback={<div className="mx-auto max-w-sm rounded-2xl border border-stone-200 bg-white p-8 shadow-sm text-center text-stone-500">Yükleniyor...</div>}>
+      <GirisForm />
+    </Suspense>
   );
 }
