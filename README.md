@@ -10,6 +10,7 @@ Next.js ve Supabase ile geliştirilmiş ikinci el ilan uygulaması.
 - **Kategoriler:** Elektronik, Giyim, Ev & Yaşam, Araç.
 - **Jeton:** Yeni kullanıcılara 10 jeton verilir. Ek fotoğraf (3.–5.) başına 1 jeton, 1 günlük öne çıkarma 5 jeton.
 - **Öne çıkarma (boost):** İlan sahibi jeton harcayarak ilanını 24 saat öne çıkarabilir.
+- **Mesajlaşma:** İlan sayfasında "Mesaj Gönder" ile ilan sahibiyle yazışma. Mesajlar `/mesajlar` sayfasında; header’da okunmamış mesaj sayısı gösterilir.
 
 ## Kurulum
 
@@ -20,7 +21,8 @@ Next.js ve Supabase ile geliştirilmiş ikinci el ilan uygulaması.
 
 2. Supabase veritabanı şemasını çalıştırın:
    - [Supabase Dashboard](https://supabase.com/dashboard) → Projeniz → SQL Editor
-   - `supabase/schema.sql` dosyasının içeriğini yapıştırıp çalıştırın.
+   - Önce `supabase/schema.sql` dosyasının içeriğini yapıştırıp çalıştırın.
+   - Sonra `supabase/messaging.sql` dosyasını çalıştırarak mesajlaşma tablolarını oluşturun.
 
 3. Ortam değişkenleri:
    - `.env.local` dosyası projede tanımlı (Supabase URL ve anon key).
@@ -39,6 +41,7 @@ Next.js ve Supabase ile geliştirilmiş ikinci el ilan uygulaması.
 - `src/lib/supabase/` – Supabase istemci ve middleware
 - `src/types/database.ts` – Tipler ve sabitler (kategoriler, jeton kuralları)
 - `supabase/schema.sql` – Veritabanı tabloları ve RLS politikaları
+- `supabase/messaging.sql` – Mesajlaşma tabloları (conversations, messages, message_reads) ve RPC
 
 ## Jeton kuralları
 

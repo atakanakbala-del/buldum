@@ -9,6 +9,7 @@ import type { User } from "@supabase/supabase-js";
 export function Header() {
   const [user, setUser] = useState<User | null>(null);
   const [tokens, setTokens] = useState<number | null>(null);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
   const router = useRouter();
@@ -16,7 +17,10 @@ export function Header() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user ?? null);
-      if (user) fetchTokens();
+      if (user) {
+        fetchTokens();
+        fetchUnread();
+      }
       setLoading(false);
     });
 
@@ -24,8 +28,13 @@ export function Header() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) fetchTokens();
-      else setTokens(null);
+      if (session?.user) {
+        fetchTokens();
+        fetchUnread();
+      } else {
+        setTokens(null);
+        setUnreadCount(0);
+      }
     });
 
     function fetchTokens() {
@@ -36,8 +45,20 @@ export function Header() {
         .then(({ data }) => setTokens(data?.tokens ?? 0));
     }
 
-    return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+    function fetchUnread() {
+      supabase.rpc("get_unread_message_count").then(({ data }) => setUnreadCount(Number(data ?? 0)));
+    }
+
+    const onFocus = () => {
+      if (user) fetchUnread();
+    };
+    window.addEventListener("focus", onFocus);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [supabase.auth, user]);
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -67,6 +88,17 @@ export function Header() {
                       {tokens} jeton
                     </span>
                   )}
+                  <Link
+                    href="/mesajlar"
+                    className="relative rounded-lg px-3 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition"
+                  >
+                    Mesajlar
+                    {unreadCount > 0 && (
+                      <span className="absolute -right-1 -top-0.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-1 text-xs font-medium text-white">
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    )}
+                  </Link>
                   <Link
                     href="/ilan-ver"
                     className="rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition"
