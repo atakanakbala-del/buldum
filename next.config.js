@@ -9,6 +9,20 @@ const nextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        // Tüm yollar için no-store
+        source: "/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
