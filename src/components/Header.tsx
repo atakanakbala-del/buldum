@@ -83,6 +83,11 @@ export function Header() {
             <>
               {user ? (
                 <>
+                  {user.email && (
+                    <span className="text-sm text-stone-600">
+                      {user.email}
+                    </span>
+                  )}
                   {tokens !== null && (
                     <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-sm font-medium text-amber-800">
                       {tokens} jeton
