@@ -45,7 +45,17 @@ function MesajlarContent() {
       .select("id, listing_id, owner_id, buyer_id, updated_at, listing:listings(title)")
       .or(`owner_id.eq.${user.id},buyer_id.eq.${user.id}`)
       .order("updated_at", { ascending: false })
-      .then(({ data }) => setConversations((data as Conversation[]) ?? []));
+      .then(({ data }) => {
+        const convs: Conversation[] = (data ?? []).map((row: any) => ({
+          id: row.id,
+          listing_id: row.listing_id,
+          owner_id: row.owner_id,
+          buyer_id: row.buyer_id,
+          updated_at: row.updated_at,
+          listing: row.listing ? { title: row.listing.title as string } : null,
+        }));
+        setConversations(convs);
+      });
   }, [user]);
 
   useEffect(() => {
