@@ -14,16 +14,27 @@ export function MessageButton({
   listingTitle: string;
 }) {
   const [userId, setUserId] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
   const router = useRouter();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => setUserId(user?.id ?? null));
-  }, []);
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUserId(user?.id ?? null);
+      setAuthChecked(true);
+    });
+  }, [supabase.auth]);
 
   async function handleClick() {
-    if (!userId || userId === listingOwnerId) return;
+    // Giriş yapmamışsa login'e yönlendir
+    if (!userId) {
+      router.push(`/giris?redirect=/ilan/${listingId}`);
+      return;
+    }
+    // İlan sahibi kendi ilanına mesaj atmasın
+    if (userId === listingOwnerId) return;
+
     setLoading(true);
     const { data: existing } = await supabase
       .from("conversations")
@@ -51,7 +62,16 @@ export function MessageButton({
     if (created?.id) router.push(`/mesajlar?c=${created.id}`);
   }
 
-  if (!userId) return null;
+  // Auth durumu henüz belli değilse, şimdilik butonu gösterme
+  if (!authChecked) {
+    return (
+      <div className="mt-6 border-t border-stone-200 pt-4 text-sm text-stone-400">
+        Yükleniyor...
+      </div>
+    );
+  }
+
+  // İlan sahibine buton gösterme
   if (userId === listingOwnerId) return null;
 
   return (
