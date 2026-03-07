@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { useEffect } from "react";
 
 export function MessageButton({
   listingId,
@@ -13,79 +11,26 @@ export function MessageButton({
   listingOwnerId: string;
   listingTitle: string;
 }) {
-  const [userId, setUserId] = useState<string | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const supabase = createClient();
-  const router = useRouter();
-
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUserId(user?.id ?? null);
-      setAuthChecked(true);
-    });
-  }, [supabase.auth]);
-
-  async function handleClick() {
-    // Giriş yapmamışsa login'e yönlendir
-    if (!userId) {
-      router.push(`/giris?redirect=/ilan/${listingId}`);
-      return;
-    }
-    // İlan sahibi kendi ilanına mesaj atmasın
-    if (userId === listingOwnerId) return;
-
-    setLoading(true);
-    const { data: existing } = await supabase
-      .from("conversations")
-      .select("id")
-      .eq("listing_id", listingId)
-      .eq("buyer_id", userId)
-      .maybeSingle();
-    if (existing?.id) {
-      router.push(`/mesajlar?c=${existing.id}`);
-      return;
-    }
-    const { data: created, error } = await supabase
-      .from("conversations")
-      .insert({
-        listing_id: listingId,
-        owner_id: listingOwnerId,
-        buyer_id: userId,
-      })
-      .select("id")
-      .single();
-    setLoading(false);
-    if (error) {
-      return;
-    }
-    if (created?.id) router.push(`/mesajlar?c=${created.id}`);
-  }
-
-  // Auth durumu henüz belli değilse, şimdilik butonu gösterme
-  if (!authChecked) {
-    return (
-      <div className="mt-6 border-t border-stone-200 pt-4 text-sm text-stone-400">
-        Yükleniyor...
-      </div>
-    );
-  }
-
-  // İlan sahibine buton gösterme
-  if (userId === listingOwnerId) return null;
+    console.log("[MessageButton] props", { listingId, listingOwnerId, listingTitle });
+  }, [listingId, listingOwnerId, listingTitle]);
 
   return (
     <div className="mt-6 border-t border-stone-200 pt-4">
       <button
         type="button"
-        onClick={handleClick}
-        disabled={loading}
+        onClick={() =>
+          console.log("[MessageButton] Test Butonu tıklandı", {
+            listingId,
+            listingOwnerId,
+          })
+        }
         className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
       >
-        {loading ? "Açılıyor..." : "Mesaj Gönder"}
+        Test Butonu
       </button>
       <p className="mt-2 text-sm text-stone-500">
-        &quot;{listingTitle}&quot; ilanı hakkında mesaj yazın.
+        &quot;{listingTitle}&quot; için test butonu.
       </p>
     </div>
   );

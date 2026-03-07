@@ -21,6 +21,11 @@ export default async function IlanDetayPage({
     .eq("id", id)
     .single();
 
+  console.log("[IlanDetayPage] listing id & owner", {
+    listingId: listing?.id,
+    listingOwnerId: listing?.user_id,
+  });
+
   if (error || !listing) notFound();
 
   const isBoosted =
