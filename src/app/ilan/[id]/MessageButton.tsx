@@ -80,7 +80,7 @@ export function MessageButton({
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className="rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50"
+        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
       >
         {loading ? "Açılıyor..." : "Mesaj Gönder"}
       </button>
