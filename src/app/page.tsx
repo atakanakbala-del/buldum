@@ -1,8 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { ListingCard } from "@/components/ListingCard";
 import { ListingFilters } from "@/components/ListingFilters";
+import Link from "next/link";
 
 export const revalidate = 30;
+
+const CATEGORY_ICONS = [
+  { slug: "elektronik", label: "Elektronik", icon: "📱" },
+  { slug: "giyim", label: "Giyim", icon: "👗" },
+  { slug: "ev-yasam", label: "Ev & Yaşam", icon: "🏠" },
+  { slug: "arac", label: "Araç", icon: "🚗" },
+];
 
 export default async function HomePage({
   searchParams,
@@ -26,7 +34,7 @@ export default async function HomePage({
   if (error) {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-        İlanlar yüklenirken hata oluştu. Lütfen Supabase şemasını çalıştırdığınızdan emin olun.
+        İlanlar yüklenirken hata oluştu.
       </div>
     );
   }
@@ -41,10 +49,40 @@ export default async function HomePage({
 
   return (
     <div>
+      {/* Banner */}
+      <div className="mb-8 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-400 px-8 py-10 text-white text-center">
+        <h1 className="text-3xl font-bold mb-2">Aradığını Bul, Bulduğunu Sat!</h1>
+        <p className="text-blue-100">Türkiye'nin en kolay ikinci el alışveriş platformu</p>
+      </div>
+
+      {/* Kategori İkonları */}
+      <div className="mb-8 grid grid-cols-4 gap-3">
+        {CATEGORY_ICONS.map((cat) => (
+          <Link
+            key={cat.slug}
+            href={`/?category=${cat.slug}`}
+            className={`flex flex-col items-center gap-2 rounded-xl border p-4 text-center transition hover:shadow-md ${
+              params.category === cat.slug
+                ? "border-blue-500 bg-blue-50"
+                : "border-stone-200 bg-white"
+            }`}
+          >
+            <span className="text-3xl">{cat.icon}</span>
+            <span className="text-xs font-medium text-stone-700">{cat.label}</span>
+          </Link>
+        ))}
+      </div>
+
+      {/* Filtreler */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold text-stone-900">İlanlar</h1>
+        <h2 className="text-xl font-bold text-stone-900">
+          {params.category
+            ? CATEGORY_ICONS.find((c) => c.slug === params.category)?.label ?? "İlanlar"
+            : "Tüm İlanlar"}
+        </h2>
         <ListingFilters category={params.category} city={params.city} />
       </div>
+
       {ordered.length === 0 ? (
         <p className="rounded-xl border border-dashed border-stone-300 bg-stone-50/50 py-12 text-center text-stone-500">
           Henüz ilan yok. İlk ilanı siz verin!
