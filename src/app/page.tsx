@@ -49,13 +49,10 @@ export default async function HomePage({
 
   return (
     <div>
-      {/* Banner */}
       <div className="mb-8 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-400 px-8 py-10 text-white text-center">
         <h1 className="text-3xl font-bold mb-2">Aradığını Bul, Bulduğunu Sat!</h1>
         <p className="text-blue-100">Türkiye'nin en kolay ikinci el alışveriş platformu</p>
       </div>
-
-      {/* Kategori İkonları */}
       <div className="mb-8 grid grid-cols-4 gap-3">
         {CATEGORY_ICONS.map((cat) => (
           <Link
@@ -72,8 +69,6 @@ export default async function HomePage({
           </Link>
         ))}
       </div>
-
-      {/* Filtreler */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-xl font-bold text-stone-900">
           {params.category
@@ -82,7 +77,6 @@ export default async function HomePage({
         </h2>
         <ListingFilters category={params.category} city={params.city} />
       </div>
-
       {ordered.length === 0 ? (
         <p className="rounded-xl border border-dashed border-stone-300 bg-stone-50/50 py-12 text-center text-stone-500">
           Henüz ilan yok. İlk ilanı siz verin!
