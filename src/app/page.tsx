@@ -51,7 +51,7 @@ export default async function HomePage({
     <div>
       <div className="mb-8 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-400 px-8 py-10 text-white text-center">
         <h1 className="text-3xl font-bold mb-2">Aradığını Bul, Bulduğunu Sat!</h1>
-        <p className="text-blue-100">Türkiye'nin en kolay ikinci el alışveriş platformu</p>
+        <p className="text-blue-100">Türkiye&apos;nin en kolay ikinci el alışveriş platformu</p>
       </div>
       <div className="mb-8 grid grid-cols-4 gap-3">
         {CATEGORY_ICONS.map((cat) => (
